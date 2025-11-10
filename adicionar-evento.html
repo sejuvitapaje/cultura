@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Evento - Sistema Cultural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="body-dados">
+    <div class="container">
+        <header>
+            <div>
+                <h1><i class="fas fa-plus-circle"></i> <span id="pageTitle">Adicionar Evento</span></h1>
+                <div class="user-badge">
+                    <i class="fas fa-user"></i>
+                    <span>Sistema Cultural</span>
+                </div>
+            </div>
+            <nav>
+                <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="adicionar-local.html"><i class="fas fa-plus-circle"></i> Adicionar Local</a>
+                <a href="backup.html"><i class="fas fa-database"></i> Backup</a>
+            </nav>
+        </header>
+        
+        <div class="content">
+            <div class="card center">
+                <h2 id="formTitle">Adicionar Evento Cultural</h2>
+                <p id="formDescription">Preencha as informações abaixo para cadastrar um novo evento cultural</p>
+            </div>
+
+            <div id="eventoForm" class="card">
+                <form id="cadastroEventoForm">
+                    <div class="form-group">
+                        <label for="nomeEvento">Nome do Evento:</label>
+                        <input type="text" id="nomeEvento" required placeholder="Digite o nome do evento">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="localEvento">Local do Evento:</label>
+                        <select id="localEvento" required>
+                            <option value="">Selecione o local</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricaoEvento">Descrição:</label>
+                        <textarea id="descricaoEvento" rows="3" placeholder="Descreva o evento"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dataEvento">Data do Evento:</label>
+                        <input type="date" id="dataEvento" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="horaEvento">Hora do Evento:</label>
+                        <input type="time" id="horaEvento" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contatoEvento">Contato:</label>
+                        <input type="text" id="contatoEvento" placeholder="Telefone, email ou site">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="imagemEvento">Imagem:</label>
+                        <input type="file" id="imagemEvento" accept="image/*">
+                        <div id="previewContainer" class="hidden">
+                            <img id="previewImage" src="#" alt="Prévia da imagem">
+                            <p class="image-note">Imagem atual: <span id="currentImageStatus">Nenhuma</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacoesEvento">Observações:</label>
+                        <textarea id="observacoesEvento" rows="3" placeholder="Informações adicionais"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3>Preços dos Serviços</h3>
+                        <div id="precosContainer">
+                            <div class="preco-item">
+                                <input type="text" class="preco-nome" placeholder="Nome do serviço (ex: Palco)">
+                                <input type="number" class="preco-valor" placeholder="Valor (R$)" min="0" step="0.01">
+                                <button type="button" class="btn-remove" onclick="removePrecoItem(this)"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" onclick="addPrecoItem()"><i class="fas fa-plus"></i> Adicionar Serviço</button>
+                        <div class="preco-total">
+                            <strong>Total: R$ <span id="totalPrecos">0.00</span></strong>
+                        </div>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="submit" id="submitButton"><i class="fas fa-plus"></i> Adicionar</button>
+                        <button type="button" class="btn-cancel" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancelar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="mensagem"></div>
+        </div>
+    </div>
+
+    <div id="loadingScreen" class="loading-screen loading-hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>

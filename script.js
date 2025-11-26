@@ -1,4 +1,3 @@
-// Configuração do Firebase - APENAS FIRESTORE
 const firebaseConfig = {
     apiKey: "AIzaSyCVZ0MiX-Haa8rp2I1YpBkBBoA2YnK5GRQ",
     authDomain: "cultura-947db.firebaseapp.com",
@@ -9,7 +8,6 @@ const firebaseConfig = {
     measurementId: "G-BD5JNBJ565"
 };
 
-// Inicializar Firebase
 try {
     firebase.initializeApp(firebaseConfig);
 } catch (error) {
@@ -19,13 +17,11 @@ try {
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// Variáveis globais
+
 let allEvents = [];
 let allLocais = [];
 
-// Inicialização quando a página carrega
 document.addEventListener('DOMContentLoaded', function() {
-    // Configurar preview de imagem
     const imagemInput = document.getElementById('imagemEvento') || document.getElementById('imagemLocal');
     if (imagemInput) {
         imagemInput.addEventListener('change', function(e) {
@@ -48,14 +44,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
     
-    // Configurar formulário de cadastro de evento
     const cadastroEventoForm = document.getElementById('cadastroEventoForm');
     if (cadastroEventoForm) {
         cadastroEventoForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Verificar se está no modo de edição
+        
             const editingEventId = localStorage.getItem('editingEventId');
             if (editingEventId) {
                 updateEvento(editingEventId);
@@ -64,20 +60,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Carregar locais para o select
+        
         loadLocaisForSelect();
         
-        // Configurar cálculo de preços
+        
         setupPrecosCalculation();
     }
     
-    // Configurar formulário de cadastro de local
+    
     const cadastroLocalForm = document.getElementById('cadastroLocalForm');
     if (cadastroLocalForm) {
         cadastroLocalForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Verificar se está no modo de edição
+            
             const editingLocalId = localStorage.getItem('editingLocalId');
             if (editingLocalId) {
                 updateLocal(editingLocalId);
@@ -87,26 +83,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Carregar dados se estiver na página principal
+    
     if (document.getElementById('allData')) {
         loadAllData();
     }
     
-    // Verificar se estamos editando um evento ou local
+    
     checkEditMode();
 });
 
-// Verificar modo de edição
+
 function checkEditMode() {
     try {
-        // Verificar se está editando evento
+        
         const editingEventId = localStorage.getItem('editingEventId');
         const editingEventData = localStorage.getItem('editingEventData');
         
         if (editingEventId && editingEventData) {
             const event = JSON.parse(editingEventData);
             
-            // Preencher formulário com dados existentes
+            
             document.getElementById('nomeEvento').value = event.nome || '';
             document.getElementById('localEvento').value = event.localId || '';
             document.getElementById('descricaoEvento').value = event.descricao || '';
@@ -115,7 +111,7 @@ function checkEditMode() {
             document.getElementById('contatoEvento').value = event.contato || '';
             document.getElementById('observacoesEvento').value = event.observacoes || '';
             
-            // Preencher preços
+            
             if (event.precos && event.precos.length > 0) {
                 const precosContainer = document.getElementById('precosContainer');
                 precosContainer.innerHTML = '';
@@ -127,7 +123,7 @@ function checkEditMode() {
                 calculateTotalPrecos();
             }
             
-            // Mostrar preview da imagem existente
+            
             if (event.imagemBase64) {
                 const previewContainer = document.getElementById('previewContainer');
                 const previewImage = document.getElementById('previewImage');
@@ -141,7 +137,7 @@ function checkEditMode() {
                 }
             }
             
-            // Mudar textos para edição
+            
             if (document.getElementById('pageTitle')) {
                 document.getElementById('pageTitle').textContent = 'Editar Evento';
             }
@@ -152,14 +148,14 @@ function checkEditMode() {
             }
         }
         
-        // Verificar se está editando local
+        
         const editingLocalId = localStorage.getItem('editingLocalId');
         const editingLocalData = localStorage.getItem('editingLocalData');
         
         if (editingLocalId && editingLocalData) {
             const local = JSON.parse(editingLocalData);
             
-            // Preencher formulário com dados existentes
+            
             document.getElementById('nomeLocal').value = local.nome || '';
             document.getElementById('tipoLocal').value = local.tipo || '';
             document.getElementById('descricaoLocal').value = local.descricao || '';
@@ -169,7 +165,7 @@ function checkEditMode() {
             document.getElementById('contatoLocal').value = local.contato || '';
             document.getElementById('observacoesLocal').value = local.observacoes || '';
             
-            // Mostrar preview da imagem existente
+            
             if (local.imagemBase64) {
                 const previewContainer = document.getElementById('previewContainer');
                 const previewImage = document.getElementById('previewImage');
@@ -183,7 +179,7 @@ function checkEditMode() {
                 }
             }
             
-            // Mudar textos para edição
+            
             if (document.getElementById('pageTitle')) {
                 document.getElementById('pageTitle').textContent = 'Editar Local';
             }
@@ -198,7 +194,7 @@ function checkEditMode() {
     }
 }
 
-// Adicionar evento
+
 async function addEvento() {
     showLoading();
     
@@ -211,7 +207,7 @@ async function addEvento() {
     const observacoesEvento = document.getElementById('observacoesEvento').value;
     const imagemEvento = document.getElementById('imagemEvento').files[0];
     
-    // Coletar preços
+
     const precos = [];
     const precoItems = document.querySelectorAll('.preco-item');
     precoItems.forEach(item => {
@@ -226,12 +222,12 @@ async function addEvento() {
     try {
         let imagemBase64 = '';
         
-        // Converter imagem para Base64 se existir
+        
         if (imagemEvento) {
             imagemBase64 = await compressAndConvertImage(imagemEvento);
         }
         
-        // Salvar dados no Firestore
+        
         await db.collection('eventos').add({
             nome: nomeEvento,
             localId: localEvento,
@@ -252,7 +248,7 @@ async function addEvento() {
         document.getElementById('precosContainer').innerHTML = '<div class="preco-item"><input type="text" class="preco-nome" placeholder="Nome do serviço (ex: Palco)"><input type="number" class="preco-valor" placeholder="Valor (R$)" min="0" step="0.01"><button type="button" class="btn-remove" onclick="removePrecoItem(this)"><i class="fas fa-trash"></i></button></div>';
         document.getElementById('totalPrecos').textContent = '0.00';
         
-        // Redirecionar após 2 segundos
+        
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 2000);
@@ -263,7 +259,7 @@ async function addEvento() {
     }
 }
 
-// Adicionar local
+
 async function addLocal() {
     showLoading();
     
@@ -280,12 +276,12 @@ async function addLocal() {
     try {
         let imagemBase64 = '';
         
-        // Converter imagem para Base64 se existir
+        
         if (imagemLocal) {
             imagemBase64 = await compressAndConvertImage(imagemLocal);
         }
         
-        // Salvar dados no Firestore
+        
         await db.collection('locais').add({
             nome: nomeLocal,
             tipo: tipoLocal,
@@ -304,7 +300,7 @@ async function addLocal() {
         document.getElementById('cadastroLocalForm').reset();
         document.getElementById('previewContainer').classList.add('hidden');
         
-        // Redirecionar após 2 segundos
+        
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 2000);
@@ -315,7 +311,7 @@ async function addLocal() {
     }
 }
 
-// Comprimir e converter imagem para Base64
+
 function compressAndConvertImage(file, maxWidth = 800, quality = 0.7) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -326,7 +322,7 @@ function compressAndConvertImage(file, maxWidth = 800, quality = 0.7) {
                 let width = img.width;
                 let height = img.height;
                 
-                // Redimensionar se for muito grande
+                
                 if (width > maxWidth) {
                     height = (height * maxWidth) / width;
                     width = maxWidth;
@@ -338,7 +334,7 @@ function compressAndConvertImage(file, maxWidth = 800, quality = 0.7) {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 
-                // Converter para Base64 com qualidade reduzida
+                
                 const base64 = canvas.toDataURL('image/jpeg', quality);
                 resolve(base64);
             };
@@ -350,12 +346,12 @@ function compressAndConvertImage(file, maxWidth = 800, quality = 0.7) {
     });
 }
 
-// Carregar todos os dados
+
 async function loadAllData() {
     showLoading();
     
     try {
-        // Carregar eventos
+        
         const eventosSnapshot = await db.collection('eventos')
             .orderBy('dataCadastro', 'desc')
             .get();
@@ -368,7 +364,7 @@ async function loadAllData() {
             });
         });
         
-        // Carregar locais
+    
         const locaisSnapshot = await db.collection('locais')
             .orderBy('dataCadastro', 'desc')
             .get();
@@ -391,7 +387,7 @@ async function loadAllData() {
     }
 }
 
-// Exibir locais com seus eventos
+
 function displayLocaisComEventos() {
     const container = document.getElementById('allData');
     
@@ -483,7 +479,7 @@ function displayLocaisComEventos() {
     `}).join('');
 }
 
-// Carregar locais para o select no formulário de eventos
+
 async function loadLocaisForSelect() {
     try {
         const snapshot = await db.collection('locais')
@@ -505,7 +501,7 @@ async function loadLocaisForSelect() {
     }
 }
 
-// Sistema de preços para eventos
+
 function addPrecoItem(nome = '', valor = '') {
     const container = document.getElementById('precosContainer');
     const div = document.createElement('div');
@@ -517,7 +513,7 @@ function addPrecoItem(nome = '', valor = '') {
     `;
     container.appendChild(div);
     
-    // Adicionar eventos para calcular total
+    
     const inputs = div.querySelectorAll('input');
     inputs.forEach(input => {
         input.addEventListener('input', calculateTotalPrecos);
@@ -561,7 +557,7 @@ function calculateTotalPrecosEvento(precos) {
     return total.toFixed(2);
 }
 
-// Visualizar detalhes do evento
+
 function viewEventDetails(eventId) {
     const event = allEvents.find(e => e.id === eventId);
     if (!event) return;
@@ -619,7 +615,7 @@ function viewEventDetails(eventId) {
     document.getElementById('eventDetailsModal').classList.remove('hidden');
 }
 
-// Visualizar detalhes do local
+
 function viewLocalDetails(localId) {
     const local = allLocais.find(l => l.id === localId);
     if (!local) return;
@@ -677,7 +673,7 @@ function viewLocalDetails(localId) {
     document.getElementById('eventDetailsModal').classList.remove('hidden');
 }
 
-// Visualizar preços de um evento
+
 function viewPrices(eventId) {
     const event = allEvents.find(e => e.id === eventId);
     if (!event) return;
@@ -723,7 +719,7 @@ function viewPrices(eventId) {
     document.getElementById('pricesModal').classList.remove('hidden');
 }
 
-// Fechar modais
+
 function closeEventModal() {
     document.getElementById('eventDetailsModal').classList.add('hidden');
 }
@@ -732,33 +728,33 @@ function closePricesModal() {
     document.getElementById('pricesModal').classList.add('hidden');
 }
 
-// Editar evento
+
 function editEvent(eventId) {
     const event = allEvents.find(e => e.id === eventId);
     if (!event) return;
     
-    // Armazenar o ID do evento para edição
+    
     localStorage.setItem('editingEventId', eventId);
     localStorage.setItem('editingEventData', JSON.stringify(event));
     
-    // Redirecionar para a página de adicionar evento
+    
     window.location.href = 'adicionar-evento.html';
 }
 
-// Editar local
+
 function editLocal(localId) {
     const local = allLocais.find(l => l.id === localId);
     if (!local) return;
     
-    // Armazenar o ID do local para edição
+    
     localStorage.setItem('editingLocalId', localId);
     localStorage.setItem('editingLocalData', JSON.stringify(local));
     
-    // Redirecionar para a página de adicionar local
+    
     window.location.href = 'adicionar-local.html';
 }
 
-// Atualizar evento
+
 async function updateEvento(eventId) {
     showLoading();
     
@@ -771,7 +767,7 @@ async function updateEvento(eventId) {
     const observacoesEvento = document.getElementById('observacoesEvento').value;
     const imagemEvento = document.getElementById('imagemEvento').files[0];
     
-    // Coletar preços
+    
     const precos = [];
     const precoItems = document.querySelectorAll('.preco-item');
     precoItems.forEach(item => {
@@ -786,19 +782,19 @@ async function updateEvento(eventId) {
     try {
         let imagemBase64 = '';
         
-        // Buscar a imagem atual do evento
+
         const eventDoc = await db.collection('eventos').doc(eventId).get();
         if (eventDoc.exists) {
             const currentData = eventDoc.data();
             imagemBase64 = currentData.imagemBase64 || '';
         }
         
-        // Se uma nova imagem foi selecionada, comprimir e converter para Base64
+        
         if (imagemEvento) {
             imagemBase64 = await compressAndConvertImage(imagemEvento);
         }
         
-        // Preparar dados para atualização
+        
         const updateData = {
             nome: nomeEvento,
             localId: localEvento,
@@ -811,24 +807,24 @@ async function updateEvento(eventId) {
             dataAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        // Só adiciona imagemBase64 se não estiver vazia
+        
         if (imagemBase64) {
             updateData.imagemBase64 = imagemBase64;
         }
         
         console.log('Atualizando evento existente:', eventId, updateData);
         
-        // ATUALIZAR o documento existente (não criar novo)
+        
         await db.collection('eventos').doc(eventId).update(updateData);
         
         hideLoading();
         showMessage('Evento atualizado com sucesso!', 'success');
         
-        // Limpar dados de edição
+        
         localStorage.removeItem('editingEventId');
         localStorage.removeItem('editingEventData');
         
-        // Redirecionar após 2 segundos
+        
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 2000);
@@ -840,7 +836,7 @@ async function updateEvento(eventId) {
     }
 }
 
-// Atualizar local
+
 async function updateLocal(localId) {
     showLoading();
     
@@ -857,19 +853,19 @@ async function updateLocal(localId) {
     try {
         let imagemBase64 = '';
         
-        // Buscar a imagem atual do local
+        
         const localDoc = await db.collection('locais').doc(localId).get();
         if (localDoc.exists) {
             const currentData = localDoc.data();
             imagemBase64 = currentData.imagemBase64 || '';
         }
         
-        // Se uma nova imagem foi selecionada, comprimir e converter para Base64
+        
         if (imagemLocal) {
             imagemBase64 = await compressAndConvertImage(imagemLocal);
         }
         
-        // Preparar dados para atualização
+        
         const updateData = {
             nome: nomeLocal,
             tipo: tipoLocal,
@@ -882,24 +878,24 @@ async function updateLocal(localId) {
             dataAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        // Só adiciona imagemBase64 se não estiver vazia
+        
         if (imagemBase64) {
             updateData.imagemBase64 = imagemBase64;
         }
         
         console.log('Atualizando local existente:', localId, updateData);
         
-        // ATUALIZAR o documento existente (não criar novo)
+        
         await db.collection('locais').doc(localId).update(updateData);
         
         hideLoading();
         showMessage('Local atualizado com sucesso!', 'success');
         
-        // Limpar dados de edição
+        
         localStorage.removeItem('editingLocalId');
         localStorage.removeItem('editingLocalData');
         
-        // Redirecionar após 2 segundos
+        
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 2000);
@@ -911,7 +907,7 @@ async function updateLocal(localId) {
     }
 }
 
-// Excluir evento
+
 async function deleteEvent(eventId) {
     if (!confirm('Tem certeza que deseja excluir este evento?')) {
         return;
@@ -924,7 +920,7 @@ async function deleteEvent(eventId) {
         hideLoading();
         showMessage('Evento excluído com sucesso!', 'success');
         
-        // Recarregar a lista
+        
         loadAllData();
         
     } catch (error) {
@@ -933,7 +929,7 @@ async function deleteEvent(eventId) {
     }
 }
 
-// Excluir local
+
 async function deleteLocal(localId) {
     if (!confirm('Tem certeza que deseja excluir este local? Todos os eventos associados a ele também serão excluídos.')) {
         return;
@@ -942,7 +938,7 @@ async function deleteLocal(localId) {
     showLoading();
     
     try {
-        // Primeiro, excluir todos os eventos associados a este local
+        
         const eventosSnapshot = await db.collection('eventos')
             .where('localId', '==', localId)
             .get();
@@ -954,13 +950,13 @@ async function deleteLocal(localId) {
         
         await batch.commit();
         
-        // Depois, excluir o local
+        
         await db.collection('locais').doc(localId).delete();
         
         hideLoading();
         showMessage('Local e eventos associados excluídos com sucesso!', 'success');
         
-        // Recarregar a lista
+        
         loadAllData();
         
     } catch (error) {
@@ -969,7 +965,7 @@ async function deleteLocal(localId) {
     }
 }
 
-// Filtrar dados
+
 function filterData() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     
@@ -978,7 +974,7 @@ function filterData() {
         return;
     }
     
-    // Filtrar locais
+    
     const filteredLocais = allLocais.filter(local => 
         local.nome.toLowerCase().includes(searchTerm) ||
         (local.descricao && local.descricao.toLowerCase().includes(searchTerm)) ||
@@ -986,19 +982,19 @@ function filterData() {
         local.endereco.toLowerCase().includes(searchTerm)
     );
     
-    // Filtrar eventos
+    
     const filteredEvents = allEvents.filter(event => 
         event.nome.toLowerCase().includes(searchTerm) ||
         (event.descricao && event.descricao.toLowerCase().includes(searchTerm))
     );
     
-    // Combinar resultados
+    
     const locaisComEventosFiltrados = filteredLocais.map(local => {
         const eventosDoLocal = filteredEvents.filter(event => event.localId === local.id);
         return { ...local, eventos: eventosDoLocal };
     });
     
-    // Exibir resultados filtrados
+    
     displayFilteredResults(locaisComEventosFiltrados);
 }
 
@@ -1093,7 +1089,7 @@ function displayFilteredResults(locaisComEventos) {
     `}).join('');
 }
 
-// Utilitários de formatação
+
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
     
@@ -1122,7 +1118,7 @@ function getTipoLocalText(tipo) {
     return tipos[tipo] || tipo;
 }
 
-// Mostrar/esconder loading
+
 function showLoading() {
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) {
@@ -1137,7 +1133,7 @@ function hideLoading() {
     }
 }
 
-// Mostrar mensagens
+
 function showMessage(message, type) {
     const mensagemDiv = document.getElementById('mensagem');
     if (mensagemDiv) {
@@ -1152,12 +1148,12 @@ function showMessage(message, type) {
     }
 }
 
-// Funções de backup
+
 async function exportData() {
     showLoading();
     
     try {
-        // Exportar eventos
+        
         const eventosSnapshot = await db.collection('eventos').get();
         const eventosData = [];
         
@@ -1178,7 +1174,7 @@ async function exportData() {
             });
         });
         
-        // Exportar locais
+        
         const locaisSnapshot = await db.collection('locais').get();
         const locaisData = [];
         
@@ -1205,7 +1201,7 @@ async function exportData() {
             exportDate: new Date().toISOString()
         };
         
-        // Criar arquivo JSON para download
+        
         const dataStr = JSON.stringify(data, null, 2);
         const dataBlob = new Blob([dataStr], {type: 'application/json'});
         const url = URL.createObjectURL(dataBlob);
@@ -1241,7 +1237,7 @@ async function importData(file) {
             try {
                 const data = JSON.parse(e.target.result);
                 
-                // Limpar dados atuais
+                
                 const eventosSnapshot = await db.collection('eventos').get();
                 const locaisSnapshot = await db.collection('locais').get();
                 
@@ -1257,20 +1253,20 @@ async function importData(file) {
                 
                 await batch.commit();
                 
-                // Adicionar novos dados de locais primeiro
+                
                 for (const item of data.locais) {
                     const { id, ...localData } = item;
-                    // Converter string de data de volta para Timestamp se existir
+                    
                     if (localData.dataCadastro) {
                         localData.dataCadastro = firebase.firestore.Timestamp.fromDate(new Date(localData.dataCadastro));
                     }
                     await db.collection('locais').add(localData);
                 }
                 
-                // Adicionar novos dados de eventos
+                
                 for (const item of data.eventos) {
                     const { id, ...eventData } = item;
-                    // Converter string de data de volta para Timestamp se existir
+                    
                     if (eventData.dataCadastro) {
                         eventData.dataCadastro = firebase.firestore.Timestamp.fromDate(new Date(eventData.dataCadastro));
                     }
@@ -1280,7 +1276,7 @@ async function importData(file) {
                 hideLoading();
                 showMessage('Dados importados com sucesso!', 'success');
                 
-                // Redirecionar para o dashboard após 2 segundos
+                
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
@@ -1299,14 +1295,15 @@ async function importData(file) {
     }
 }
 
-// Função para cancelar edição
+
 function cancelEdit() {
-    // Limpar dados de edição
+    
     localStorage.removeItem('editingEventId');
     localStorage.removeItem('editingEventData');
     localStorage.removeItem('editingLocalId');
     localStorage.removeItem('editingLocalData');
     
-    // Redirecionar para o dashboard
+
     window.location.href = 'index.html';
+
 }

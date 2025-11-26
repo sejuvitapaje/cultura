@@ -46,14 +46,12 @@ body {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
 }
 
-/* Container principal */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Header */
 header {
     display: flex;
     justify-content: space-between;
@@ -131,7 +129,6 @@ nav a:hover {
     opacity: 0.9;
 }
 
-/* Painel de administração */
 .admin-panel {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -170,7 +167,6 @@ nav a:hover {
     color: #fdbb2d;
 }
 
-/* Layout de locais com eventos */
 .locais-e-eventos {
     display: grid;
     grid-template-columns: 1fr;
@@ -317,7 +313,6 @@ nav a:hover {
     gap: 8px;
 }
 
-/* Botões */
 .btn-edit, .btn-delete, .btn-view, .btn-prices {
     padding: 8px 12px;
     border: none;
@@ -357,7 +352,7 @@ nav a:hover {
     transform: scale(1.05);
 }
 
-/* Formulários */
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -378,7 +373,6 @@ input, textarea, select {
     font-size: 16px;
 }
 
-/* CORREÇÃO DO SELECT - Agora visível */
 select {
     appearance: none;
     -webkit-appearance: none;
@@ -446,7 +440,6 @@ button:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Sistema de preços */
 .preco-item {
     display: flex;
     gap: 10px;
@@ -483,7 +476,6 @@ button:hover {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Preview de imagem */
 #previewContainer {
     margin-top: 10px;
     text-align: center;
@@ -496,7 +488,6 @@ button:hover {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Mensagens */
 #mensagem {
     margin-top: 20px;
     padding: 15px;
@@ -517,7 +508,6 @@ button:hover {
     display: block !important;
 }
 
-/* Barra de pesquisa */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -542,7 +532,6 @@ button:hover {
     margin-bottom: 0;
 }
 
-/* Modal */
 .modal {
     position: fixed;
     top: 0;
@@ -600,7 +589,6 @@ button:hover {
     color: #fdbb2d;
 }
 
-/* Tela de carregamento */
 .loading-screen {
     position: fixed;
     top: 0;
@@ -628,7 +616,6 @@ button:hover {
     margin-bottom: 15px;
 }
 
-/* Utilitários */
 .hidden {
     display: none;
 }
@@ -648,7 +635,6 @@ button:hover {
     font-weight: bold;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -717,3 +703,4 @@ button:hover {
         flex-direction: column;
     }
 }
+
